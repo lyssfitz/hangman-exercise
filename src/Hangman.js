@@ -30,7 +30,7 @@ class Hangman extends Component {
 		return this.state.answer.split('').map(ltr => (this.state.guessed.has(ltr) ? ltr : '_'));
 	}
 
-	/** handleGuest: handle a guessed letter:
+	/** handleGuess: handle a guessed letter:
     - add to guessed letters
     - if not in answer, increase number-wrong guesses
   */
@@ -61,15 +61,20 @@ class Hangman extends Component {
 	}
 	/** render: render game */
 	render() {
-		const gameOver = this.state.nWrong >= this.props.maxWrong;
 		const altText = `${this.props.maxWrong - this.state.nWrong} guesses left.`;
+		const gameOver = this.state.nWrong >= this.props.maxWrong;
+		const isWinner = this.guessedWord().join('') === this.state.answer;
+		let gameState = this.generateButtons();
+		if (isWinner) gameState = 'You Win! 🤩';
+		if (gameOver) gameState = 'You Lose 😭';
+
 		return (
 			<div className="Hangman">
 				<h1>Hangman</h1>
 				<img src={this.props.images[this.state.nWrong]} alt={altText} />
 				<p>Number wrong: {this.state.nWrong}</p>
 				<p className="Hangman-word">{!gameOver ? this.guessedWord() : this.state.answer}</p>
-				<p className="Hangman-btns">{!gameOver ? this.generateButtons() : `You lose 😭`}</p>
+				<p className="Hangman-btns">{gameState}</p>
 				<button id="reset" onClick={this.handleReset}>
 					RESET
 				</button>
